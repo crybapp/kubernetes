@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: portals
+  labels:
+    app: portals
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 1337
+      protocol: TCP
+  selector:
+    app: portals

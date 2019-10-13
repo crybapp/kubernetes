@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  labels:
+    app: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - image: registry.example.com/cryb/api:latest
+          name: api
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: api-env-secret
+          env:
+            - name: K8S_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: 4000
+              name: http-server
+      imagePullSecrets:
+        - name: registry-regcred-api

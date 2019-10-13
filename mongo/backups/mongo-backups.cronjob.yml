@@ -1,0 +1,25 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mongo-backups
+spec:
+  schedule: '0 */2 * * *'
+  successfulJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: mongodump
+              image: mongo
+              command: ['/bin/sh', '-c']
+              args:
+                - 'mongodump --uri mongodb://mongo --gzip --archive=/backups/$(date +%F--%H).gz && find /backups -mtime +7 -exec rm {} \;'
+              volumeMounts:
+                - name: mongo-backups
+                  mountPath: backups
+          volumes:
+            - name: mongo-backups
+              persistentVolumeClaim:
+                claimName: mongo-backups
+          restartPolicy: Never
