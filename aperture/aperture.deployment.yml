@@ -1,26 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: aperture
   labels:
-    app: api
+    app: aperture
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: api
+      app: aperture
   template:
     metadata:
       labels:
-        app: api
+        app: aperture
     spec:
       containers:
-        - image: registry.example.com/cryb/api:latest
-          name: api
+        - image: registry.example.com/cryb/aperture:latest
+          name: aperture
           imagePullPolicy: Always
           envFrom:
             - secretRef:
-                name: api-env-secret
+                name: aperture-env-secret
           env:
             - name: K8S_POD_NAME
               valueFrom:
@@ -30,4 +30,4 @@ spec:
             - containerPort: 4000
               name: http-server
       imagePullSecrets:
-        - name: registry-regcred-api
+        - name: registry-regcred-aperture
